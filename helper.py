@@ -49,27 +49,47 @@ def visually_check_data(x_data, y_data, x_data_resized, label_names):
     # Show the plot
     plt.show()
 
-def subsample_dataset(x_train, y_train, x_test, y_test, num_training_samples=1000, num_testing_samples=200):
+import numpy as np
 
-    # Shuffling the dataset for unbiased random sampling
-    training_indices = np.arange(x_train.shape[0])
-    np.random.shuffle(training_indices)  # This shuffles the array in-place
+def combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percentage=0.7):
+    """
+    Combine the training and testing datasets, shuffle, and then split according to the specified training percentage.
 
-    # Select a random subset of the training data
-    train_indices = training_indices[:num_training_samples]
-    x_train_subset = x_train[train_indices]
-    y_train_subset = y_train[train_indices]
+    Parameters:
+    x_train (np.array): Training data features.
+    y_train (np.array): Training data labels.
+    x_test (np.array): Testing data features.
+    y_test (np.array): Testing data labels.
+    training_percentage (float): The percentage of the combined data to use as the new training set.
 
-    # Shuffle the indices of the testing data
-    testing_indices = np.arange(x_test.shape[0])
-    np.random.shuffle(testing_indices)  # This shuffles the array in-place
+    Returns:
+    np.array: New training data features.
+    np.array: New training data labels.
+    np.array: New testing data features.
+    np.array: New testing data labels.
+    """
+    # Combine the datasets
+    x_combined = np.concatenate((x_train, x_test), axis=0)
+    y_combined = np.concatenate((y_train, y_test), axis=0)
 
-    # Select a random subset of the testing data
-    test_indices = testing_indices[:num_testing_samples]
-    x_test_subset = x_test[test_indices]
-    y_test_subset = y_test[test_indices]
+    # Shuffle the combined dataset
+    combined_indices = np.arange(x_combined.shape[0])
+    np.random.shuffle(combined_indices)
+    x_combined = x_combined[combined_indices]
+    y_combined = y_combined[combined_indices]
 
-    return x_train_subset, y_train_subset, x_test_subset, y_test_subset
+    # Compute split indices based on the specified training percentage
+    num_total_samples = x_combined.shape[0]
+    num_training_samples = int(training_percentage * num_total_samples)
+
+    # Split the datasets into new training and testing sets
+    x_train_new = x_combined[:num_training_samples]
+    y_train_new = y_combined[:num_training_samples]
+    x_test_new = x_combined[num_training_samples:]
+    y_test_new = y_combined[num_training_samples:]
+
+    return x_train_new, y_train_new, x_test_new, y_test_new
+
 
 
 def normalize_img(image, label):

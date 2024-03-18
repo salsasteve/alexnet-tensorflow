@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.datasets import cifar10
-from helper import resize, normalize_img , subsample_dataset, visually_check_data
+from helper import resize, normalize_img , combined_subsample_dataset
 import matplotlib.pyplot as plt
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model
@@ -34,13 +34,13 @@ label_names = {
 
 
 # subsample the dataset
-x_train, y_train, x_test, y_test = subsample_dataset(x_train, y_train, x_test, y_test, num_training_samples = 7000, num_testing_samples = 3000)
+x_train, y_train, x_test, y_test = combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percentage=0.7)
 
 # Print the shape of the training and testing sets
-# print(x_train.shape)
-# print(y_train.shape)
-# print(x_test.shape)
-# print(y_test.shape)
+print(x_train.shape)
+print(y_train.shape)
+print(x_test.shape)
+print(y_test.shape)
 
 
 
