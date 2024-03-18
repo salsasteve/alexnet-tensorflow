@@ -49,11 +49,10 @@ def visually_check_data(x_data, y_data, x_data_resized, label_names):
     # Show the plot
     plt.show()
 
-import numpy as np
-
-def combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percentage=0.7):
+def combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percentage=0.7, reduction_percentage=1.0):
     """
-    Combine the training and testing datasets, shuffle, and then split according to the specified training percentage.
+    Combine the training and testing datasets, reduce the size according to the specified reduction percentage,
+    shuffle, and then split according to the specified training percentage.
 
     Parameters:
     x_train (np.array): Training data features.
@@ -61,6 +60,7 @@ def combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percen
     x_test (np.array): Testing data features.
     y_test (np.array): Testing data labels.
     training_percentage (float): The percentage of the combined data to use as the new training set.
+    reduction_percentage (float): The percentage of the combined data to retain.
 
     Returns:
     np.array: New training data features.
@@ -72,7 +72,12 @@ def combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percen
     x_combined = np.concatenate((x_train, x_test), axis=0)
     y_combined = np.concatenate((y_train, y_test), axis=0)
 
-    # Shuffle the combined dataset
+    # Reduce the size of the combined dataset
+    reduction_indices = np.random.choice(np.arange(x_combined.shape[0]), size=int(reduction_percentage * x_combined.shape[0]), replace=False)
+    x_combined = x_combined[reduction_indices]
+    y_combined = y_combined[reduction_indices]
+
+    # Shuffle the reduced dataset
     combined_indices = np.arange(x_combined.shape[0])
     np.random.shuffle(combined_indices)
     x_combined = x_combined[combined_indices]
@@ -89,7 +94,6 @@ def combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percen
     y_test_new = y_combined[num_training_samples:]
 
     return x_train_new, y_train_new, x_test_new, y_test_new
-
 
 
 def normalize_img(image, label):

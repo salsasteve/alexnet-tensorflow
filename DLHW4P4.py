@@ -34,7 +34,7 @@ label_names = {
 
 
 # subsample the dataset
-x_train, y_train, x_test, y_test = combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percentage=0.7)
+x_train, y_train, x_test, y_test = combined_subsample_dataset(x_train, y_train, x_test, y_test, training_percentage=0.7, reduction_percentage=0.1)
 
 # Print the shape of the training and testing sets
 print(x_train.shape)
